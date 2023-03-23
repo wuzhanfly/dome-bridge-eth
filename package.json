@@ -1,0 +1,9 @@
+{
+  "name": "dom-bridge-eth",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@eth-optimism/sdk": "^2.0.1"
+  }
+}
