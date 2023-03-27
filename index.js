@@ -1,5 +1,6 @@
 const ethers = require("ethers")
 const optimismSDK = require("@eth-optimism/sdk")
+// get .env value
 require('dotenv').config()
 const mnemonic = process.env.MNEMONIC
 const words = process.env.MNEMONIC.match(/[a-zA-Z]+/g).length
@@ -8,6 +9,7 @@ if (!validLength.includes(words)) {
     console.log(`The mnemonic (${process.env.MNEMONIC}) is the wrong number of words`)
     process.exit(-1)
 }
+// init L1 L2 provider
 const l1Url = `https://goerli.infura.io/v3/${process.env.GOERLI_INFURA_KEY}`
 const l2Url = `http://54.95.181.155:8545`
 let crossChainMessenger
@@ -22,7 +24,7 @@ const getSigners = async () => {
 
     return [l1Wallet, l2Wallet]
 }
-
+// input L1 contracts address to init bridges 
 zeroAddr = "0x".padEnd(42, "0")
 l1Contracts = {
     StateCommitmentChain: zeroAddr,
@@ -61,6 +63,8 @@ const setup = async() => {
         l2SignerOrProvider: l2Signer,
     })
 }
+
+// get balance in L1 and L2
 const gwei = BigInt(1e9)
 const eth = gwei * gwei
 const centieth = eth/100n
@@ -70,10 +74,14 @@ const reportBalances = async () => {
 
     console.log(`On L1:${l1Balance} Gwei On L2:${l2Balance} Gwei`)
 }
+
+// depositETH
 const depositETH = async () => {
     console.log("Deposit ETH")
     await reportBalances()
     const start = new Date()
+    
+   // depositETH  1000gwei== 0.0000001eth
     const response = await crossChainMessenger.depositETH(1000n * gwei)
     console.log(`Transaction hash (on L1): ${response.hash}`)
     await response.wait()
